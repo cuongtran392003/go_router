@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:go_router_flutter/app/mockup/item.dart';
+import 'package:go_router_flutter/app/router/router_name.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../home/wigdet/home_bottomappbar.dart';
 
 class CategoryPage extends StatelessWidget{
   const CategoryPage({super.key});
@@ -11,20 +16,26 @@ class CategoryPage extends StatelessWidget{
           child: ListView.separated(
             separatorBuilder: (context,index)=>SizedBox(height: 20,),
             padding: EdgeInsetsDirectional.symmetric(horizontal: 20),
-              itemCount: 10,
+              itemCount: dataMockup.length,
               itemBuilder: (BuildContext context,int index){
-                return  AspectRatio(aspectRatio: 5/2,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                return  InkWell(
+                  onTap: (){
+                    context.goNamed(RouterName.categoryproduct,extra: dataMockup[index]);
+                  },
+                  child: AspectRatio(aspectRatio: 5/2,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: FadeInImage.memoryNetwork(placeholder: kTransparentImage,
+                          fit: BoxFit.cover,
+                          image: dataMockup[index].image),
                     ),
-                    child: FadeInImage.memoryNetwork(placeholder: kTransparentImage,
-                        fit: BoxFit.cover,
-                        image: "https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGZvb2R8ZW58MHx8MHx8fDA%3D"),
                   ),
                 );
               },),
-          )
+          ),
+      bottomNavigationBar: const BottomNavBar(),
       );
   }
 }

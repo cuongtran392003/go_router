@@ -1,19 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:go_router_flutter/app/mockup/item.dart';
+import 'package:go_router_flutter/models/article.dart';
+import 'package:go_router_flutter/provider/like_provide.dart';
+import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../home/wigdet/home_bottomappbar.dart';
+
 class ProductPage extends StatelessWidget{
-  const ProductPage({super.key});
+  Article item;
+   ProductPage({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
-          Expanded(child: Container(
+          Expanded(child: SizedBox(
             width: double.infinity,
-            child: FadeInImage.memoryNetwork(placeholder: kTransparentImage,
-                fit: BoxFit.cover,
-                image: "https://plus.unsplash.com/premium_photo-1663858367001-89e5c92d1e0e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGZvb2R8ZW58MHx8MHx8fDA%3D"),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Hero(
+                    tag: 'tag${item.id}',
+                    child: FadeInImage.memoryNetwork(placeholder: kTransparentImage,
+                        fit: BoxFit.cover,
+                        image: item.image),
+                  ),
+                ),
+                Positioned(
+                  bottom: 10,
+                    right: 10,
+                    child: Consumer<LikeProvide>(
+                        builder: (context,value,child)=>LikeButton(
+                          isLiked: value.listlike.contains(item.id),
+                          onTap: (isLiked){
+                            context.read<LikeProvide>().onClickLike(item.id);
+                            return Future.value(!isLiked);
+                          },
+                        ),
+                    )
+                ),
+              ],
+            ),
           )),
           Expanded(
             flex: 2,
@@ -22,14 +53,15 @@ class ProductPage extends StatelessWidget{
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("data",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                    Text(item.title,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
                     SizedBox(height: 20,),
-                    Text("DATA"),
+                    Text(item.description),
                   ],
                           ),
               )),
         ],
       ),
+      bottomNavigationBar:const BottomNavBar(),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router_flutter/pages/home/wigdet/home_bottomappbar.dart';
 import 'package:go_router_flutter/pages/home/wigdet/home_header.dart';
 import 'package:go_router_flutter/pages/home/wigdet/home_listcategory.dart';
 import 'package:go_router_flutter/pages/home/wigdet/home_search.dart';
@@ -23,6 +24,7 @@ class HomePages extends StatelessWidget{
           ),
         ),
       ),
+      bottomNavigationBar: const BottomNavBar(),
     );
   }
 }

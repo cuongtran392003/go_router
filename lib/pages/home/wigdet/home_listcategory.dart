@@ -1,6 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:go_router_flutter/app/mockup/item.dart';
+import 'package:go_router_flutter/app/router/router_name.dart';
+import 'package:go_router_flutter/provider/like_provide.dart';
+import 'package:like_button/like_button.dart';
+import 'package:provider/provider.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 
@@ -12,7 +17,7 @@ class HomeListcategory extends StatelessWidget{
     return
       Expanded(
         child: GridView.builder(
-          itemCount: 10,
+          itemCount: dataMockup.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               mainAxisSpacing: 15,
@@ -22,7 +27,7 @@ class HomeListcategory extends StatelessWidget{
             itemBuilder: (BuildContext context,int index){
               return InkWell(
                 onTap: (){
-                  context.go("/details");
+                  context.goNamed(RouterName.product,extra: dataMockup[index]);
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,14 +47,36 @@ class HomeListcategory extends StatelessWidget{
                           ],
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            fit: BoxFit.cover,
-                            image: "https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D"),
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: Hero(
+                                tag: 'tag${dataMockup[index].id}',
+                                child: FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    fit: BoxFit.cover,
+                                    image: dataMockup[index].image),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Consumer<LikeProvide>(
+                                builder: (context, value, child) => LikeButton(
+                                  isLiked: value.listlike.contains(dataMockup[index].id),
+                                  onTap: (isLiked) async {
+                                    context.read<LikeProvide>().onClickLike(dataMockup[index].id);
+                                    return Future.value(!isLiked); // Đảo ngược trạng thái Like
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     SizedBox(height: 5,),
-                    const Text("Salad",maxLines: 1,overflow: TextOverflow.ellipsis,),
+                    Text(dataMockup[index].title,maxLines: 1,overflow: TextOverflow.ellipsis,),
                   ],
                 ),
               );
